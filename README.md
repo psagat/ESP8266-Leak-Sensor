@@ -1,15 +1,10 @@
 # ESP8266 Nodemcu Leak Sensor with SMS functionality
 
-This project builds a leak sensor using an esp8266 Nodemcu. This sensor will alert the user of any water leaks and report them via PushBullet. The
-sensor will also check in every 30 days to make sure it's still alive.
-
-
-<a href="http://imgur.com/EKuIALh"><img src="http://i.imgur.com/EKuIALh.png" title="source: imgur.com" /></a>
+This project builds a leak sensor using an esp8266 Nodemcu. This sensor will alert the user of any water leaks and report them via PushBullet. The sensor will also check in every 30 days to make sure it's still alive.
 
 ## Getting Started
 
-These instructions will provide you with the breadboard schematic, the sketch, and the changes within the sketch you will need to make.
-It will NOT go into configuring grafana or influxdb as there are plenty instructions found with a simple google search. It also assumes you have a working IDE for your NodeMCU ESP8266. Instructions on how to configure your ESP can be located here:
+These instructions will provide you with the protoboard schematic, PushBullet configuration, the sketch, and the changes within the sketch you will need to make.
 
 http://www.instructables.com/id/Quick-Start-to-Nodemcu-ESP8266-on-Arduino-IDE/
 
@@ -18,59 +13,77 @@ http://www.instructables.com/id/Quick-Start-to-Nodemcu-ESP8266-on-Arduino-IDE/
 You will need the following environement setup:
 
 #### Software:
-1.Grafana or other graphing utility
+1.PushBullet Account
 
-2.Influxdb
-
-3.Arduino IDE (DHT,ESP8266WiFi, and WiFiClient libraries)
+2.Arduino IDE (DHT,ESP8266WiFi, and WiFiClient libraries)
 
 #### Hardware:
 
 1.Nodemcu ESP8266 Dev board
 
-2.DHT22 Temp and Humidity Sensor
+2.Protoboard or breadboard
+
+2.Rain Sensor Rainwater Sensor - any water sensor will do
 
 #### Breadboard Schematic
 <a href="http://imgur.com/mi70bTi"><img src="http://i.imgur.com/mi70bTi.png" title="source: imgur.com" /></a>
 
+#### Protoboard Design
+
 ### Configure Sketch
 
-Download HumditySensor-test-http.ino and open with Arduino. These changes need to be made to the sketch based on your own environment.
+Download LeakSensor-GT.ino and open with Arduino. These changes need to be made to the sketch based on your own environment.
+
+#### Configure digital input
+
+```
+define LEAK_PIN  5  ------- 5 maps to d01 on the nodemcu
+```
 
 #### Configure network information
 
 ```
 const char* ssid     = "SSID"; ------- Change to your SSID
 const char* password = "SECRET"; ------ Your PW
-const char* host = "x.x.x.x"; ------ IP address of your influxdb server
 ```
-#### Configure POST HTTP request
+
+#### Configure your check values
 
 ```
-  String url = "/write?db=Custom";
-  Serial.print("requesting URL: "); Serial.println(url);
-  String body= "Humidity,location=Humidor value=" + String(h);
-  client.print(String("POST ") + url + " HTTP/1.1\r\n" +
-               "Host: " + host + "\r\n" +
-               "User-Agent: ESP8266\r\n" +
-               "Content-length: " + body.length() +"\r\n" 
-               "Content-Type: application/x-www-form-urlencoded" +
-               "Connection: close\r\n\r\n" +
-               body
-              );
+int leakCheckInterval = 15000; // check for leaks every 15 seconds
+int healthCheckInterval = 86400000; // runs a health check every 24 hours so we know we haven't died
 ```
+
+#### Add your PushBullet API
+
+1.Create a PushBullet account
+2.Go to My Account
+3.Under `Access Token` click `Create Access Token`
+4.Modify sketch to add your api
+
 ```
-  String url = "/write?db=Custom"; <----------- Change db= to the database you want to send the data to (db=mydb)
+const char* accessToken = "SECRET"; // PushBullet API for account
 ```
+
+#### Configure POST HTTP body request
+
+You can change the body to be whatever you want but it needs to follow the format below. I have used it to identify the location that 
+the water leak has been detected in.
+
 ```
-  String body= "Humidity,location=Humidor value=" + String(h); <------ You can change the name and the location of the dataset
+String body= "{\"body\":\"Water has been detected by location (Basement Furnace)\",\"title\":\"Water Detected\",\"type\":\"note\"}";
+
 ```
 
 Upload the sketch to your esp8266
 
 When configured correctly you should see the following output in your console (ctrl-shift-M)
 
-<a href="http://imgur.com/db3Rcvc"><img src="http://i.imgur.com/db3Rcvc.png" title="source: imgur.com" /></a>
+<a href="http://imgur.com/SAMRSkO"><img src="http://i.imgur.com/SAMRSkO.png" title="source: imgur.com" /></a>
+
+When water is detected you will see the following:
+
+<a href="http://imgur.com/RLiho6g"><img src="http://i.imgur.com/RLiho6g.png" title="source: imgur.com" /></a>
 
 ### Configure Grafana Metrics
 
