@@ -57,8 +57,11 @@ int healthCheckInterval = 86400000; // runs a health check every 24 hours so we 
 #### Add your PushBullet API
 
 1.Create a PushBullet account
+
 2.Go to My Account
+
 3.Under `Access Token` click `Create Access Token`
+
 4.Modify sketch to add your api
 
 ```
