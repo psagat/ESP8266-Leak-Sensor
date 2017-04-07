@@ -1,12 +1,11 @@
 # ESP8266 Nodemcu Leak Sensor with SMS functionality
 
-This project builds a leak sensor using an esp8266 Nodemcu. This sensor will alert the user of any water leaks and report them via PushBullet. The sensor will also check in every 30 days to make sure it's still alive.
+This project builds a water leak sensor using an esp8266 Nodemcu. This sensor will alert the user of any water leaks and report them via PushBullet. A health check function is also implemented to ensure communication from the device.
 
 ## Getting Started
 
-These instructions will provide you with the protoboard schematic, PushBullet configuration, the sketch, and the changes within the sketch you will need to make.
-
-http://www.instructables.com/id/Quick-Start-to-Nodemcu-ESP8266-on-Arduino-IDE/
+These instructions will provide you with the protoboard schematic, PushBullet configuration, the sketch, and the code changes you will
+need to make.
 
 ### Prerequisites
 
@@ -16,6 +15,8 @@ You will need the following environement setup:
 1.PushBullet Account
 
 2.Arduino IDE (DHT,ESP8266WiFi, and WiFiClient libraries)
+http://www.instructables.com/id/Quick-Start-to-Nodemcu-ESP8266-on-Arduino-IDE/
+
 
 #### Hardware:
 
@@ -23,7 +24,8 @@ You will need the following environement setup:
 
 2.Protoboard or breadboard
 
-2.Rain Sensor Rainwater Sensor - any water sensor will do
+3.Rain Sensor Rainwater Sensor - any water sensor will do
+
 
 #### Breadboard Schematic
 <a href="http://imgur.com/mi70bTi"><img src="http://i.imgur.com/mi70bTi.png" title="source: imgur.com" /></a>
@@ -32,12 +34,12 @@ You will need the following environement setup:
 
 ### Configure Sketch
 
-Download LeakSensor-GT.ino and open with Arduino. These changes need to be made to the sketch based on your own environment.
+Download LeakSensor-GIT.ino and open with Arduino. These changes need to be made to the sketch based on your own environment.
 
 #### Configure digital input
 
 ```
-define LEAK_PIN  5  ------- 5 maps to d01 on the nodemcu
+define LEAK_PIN  5  ------- 5 maps to d01 on the nodemcu. Use whatever digital in you like.
 ```
 
 #### Configure network information
@@ -88,20 +90,13 @@ When water is detected you will see the following:
 
 <a href="http://imgur.com/RLiho6g"><img src="http://i.imgur.com/RLiho6g.png" title="source: imgur.com" /></a>
 
-### Configure Grafana Metrics
-
-Your graph should look like this:
-
-<a href="http://imgur.com/Y0EdoW7"><img src="http://i.imgur.com/Y0EdoW7.png" title="source: imgur.com" /></a>
-
-"Humidity" and "Location" can be change to whatever you want when you configure the HTTP Post section of the sketch.
 
 
 ## Built With
 
 * [Arduino](https://www.arduino.cc//) - Arduino IDE
-* [Grafana](https://grafana.com/) - Graphing and analytics 
-* [Influxdb](https://www.influxdata.com/open-source/#influxdb/) - Time series database
+* [PushBullet](https://www.pushbullet.com/) - Remote messaging
+
 
 ## Authors
 
